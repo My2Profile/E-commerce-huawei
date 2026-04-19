@@ -1,8 +1,8 @@
 package com.huawei.cloudnative.ecommerce.controller;
 
 import com.huawei.cloudnative.ecommerce.dto.CreateOrderRequest;
+import com.huawei.cloudnative.ecommerce.entity.ProductEntity;
 import com.huawei.cloudnative.ecommerce.model.Order;
-import com.huawei.cloudnative.ecommerce.model.Product;
 import com.huawei.cloudnative.ecommerce.service.OrderService;
 import com.huawei.cloudnative.ecommerce.service.ProductService;
 import com.huawei.cloudnative.ecommerce.service.TokenService;
@@ -44,7 +44,7 @@ public class OrderController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        List<Product> products = productService.findByIds(request.productIds());
+        List<ProductEntity> products = productService.findEntitiesByIds(request.productIds());
         if (products.isEmpty()) {
             return ResponseEntity.badRequest().build();
         }

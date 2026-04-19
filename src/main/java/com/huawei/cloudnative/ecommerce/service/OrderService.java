@@ -1,28 +1,66 @@
 package com.huawei.cloudnative.ecommerce.service;
 
+import com.huawei.cloudnative.ecommerce.entity.AppUser;
+import com.huawei.cloudnative.ecommerce.entity.OrderEntity;
+import com.huawei.cloudnative.ecommerce.entity.OrderItemEntity;
+import com.huawei.cloudnative.ecommerce.entity.ProductEntity;
 import com.huawei.cloudnative.ecommerce.model.Order;
-import com.huawei.cloudnative.ecommerce.model.Product;
+import com.huawei.cloudnative.ecommerce.repository.AppUserRepository;
+import com.huawei.cloudnative.ecommerce.repository.OrderRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.math.BigDecimal;
+import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 @Service
 public class OrderService {
 
-    private final List<Order> orders = new ArrayList<>();
-    private final AtomicLong sequence = new AtomicLong(1L);
+    private final OrderRepository orderRepository;
+    private final AppUserRepository appUserRepository;
 
-    public synchronized Order createOrder(String username, List<Product> products) {
-        double totalAmount = products.stream().mapToDouble(Product::price).sum();
-        List<Long> productIds = products.stream().map(Product::id).toList();
-        Order order = new Order(sequence.getAndIncrement(), username, productIds, totalAmount);
-        orders.add(order);
-        return order;
+    public OrderService(OrderRepository orderRepository, AppUserRepository appUserRepository) {
+        this.orderRepository = orderRepository;
+        this.appUserRepository = appUserRepository;
     }
 
-    public synchronized List<Order> getOrdersByUsername(String username) {
-        return orders.stream().filter(order -> order.username().equals(username)).toList();
+    public Order createOrder(String username, List<ProductEntity> products) {
+        AppUser user = appUserRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        OrderEntity orderEntity = new OrderEntity();
+        orderEntity.setUser(user);
+        orderEntity.setCreatedAt(OffsetDateTime.now());
+
+        BigDecimal totalAmount = products.stream()
+                .map(ProductEntity::getPrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        orderEntity.setTotalAmount(totalAmount);
+
+        products.forEach(product -> {
+            OrderItemEntity item = new OrderItemEntity();
+            item.setOrder(orderEntity);
+            item.setProduct(product);
+            item.setQuantity(1);
+            item.setUnitPrice(product.getPrice());
+            orderEntity.getItems().add(item);
+        });
+
+        return toModel(orderRepository.save(orderEntity));
+    }
+
+    public List<Order> getOrdersByUsername(String username) {
+        return orderRepository.findByUserUsernameOrderByCreatedAtDesc(username).stream().map(this::toModel).toList();
+    }
+
+    private Order toModel(OrderEntity orderEntity) {
+        List<Long> productIds = orderEntity.getItems().stream().map(item -> item.getProduct().getId()).toList();
+        return new Order(
+                orderEntity.getId(),
+                orderEntity.getUser().getUsername(),
+                productIds,
+                orderEntity.getTotalAmount(),
+                orderEntity.getCreatedAt()
+        );
     }
 }

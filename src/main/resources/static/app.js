@@ -17,13 +17,13 @@ loginBtn.addEventListener("click", async () => {
 
     const loginResult = document.getElementById("loginResult");
     if (!response.ok) {
-        loginResult.textContent = "登录失败，请确认密码（password123）";
+        loginResult.textContent = "Login failed. Please check your credentials.";
         return;
     }
 
     const data = await response.json();
     authToken = data.token;
-    loginResult.textContent = `登录成功，token: ${authToken}`;
+    loginResult.textContent = `Login successful. Token: ${authToken}`;
 });
 
 loadProductsBtn.addEventListener("click", async () => {
@@ -34,14 +34,14 @@ loadProductsBtn.addEventListener("click", async () => {
 
     products.forEach(product => {
         const li = document.createElement("li");
-        li.textContent = `#${product.id} ${product.name} - ¥${product.price}`;
+        li.textContent = `#${product.id} ${product.name} - $${product.price}`;
         productList.appendChild(li);
     });
 });
 
 createOrderBtn.addEventListener("click", async () => {
     if (!authToken) {
-        alert("请先登录");
+        alert("Please login first.");
         return;
     }
 
@@ -59,7 +59,7 @@ createOrderBtn.addEventListener("click", async () => {
 
     const orderResult = document.getElementById("orderResult");
     if (!response.ok) {
-        orderResult.textContent = "创建订单失败，请检查商品ID";
+        orderResult.textContent = "Order creation failed. Please verify product IDs.";
         return;
     }
 
@@ -69,7 +69,7 @@ createOrderBtn.addEventListener("click", async () => {
 
 loadOrdersBtn.addEventListener("click", async () => {
     if (!authToken) {
-        alert("请先登录");
+        alert("Please login first.");
         return;
     }
 
