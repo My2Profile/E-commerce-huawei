@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cloud Native E-commerce Demo</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div class="container">
+    <h1>电商系统 Demo</h1>
+
+    <section class="card">
+        <h2>1) 登录</h2>
+        <div class="row">
+            <input id="username" type="text" placeholder="用户名，例如 demo" />
+            <input id="password" type="password" placeholder="密码（固定: password123）" />
+            <button id="loginBtn">登录</button>
+        </div>
+        <p id="loginResult" class="result"></p>
+    </section>
+
+    <section class="card">
+        <h2>2) 查看商品</h2>
+        <button id="loadProductsBtn">加载商品</button>
+        <ul id="productList"></ul>
+    </section>
+
+    <section class="card">
+        <h2>3) 创建订单</h2>
+        <p>输入商品ID列表（逗号分隔），例如: 1,2</p>
+        <div class="row">
+            <input id="orderProductIds" type="text" placeholder="1,2" />
+            <button id="createOrderBtn">创建订单</button>
+            <button id="loadOrdersBtn">查看我的订单</button>
+        </div>
+        <pre id="orderResult" class="result"></pre>
+    </section>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
