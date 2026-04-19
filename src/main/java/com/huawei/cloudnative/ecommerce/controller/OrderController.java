@@ -1,10 +1,8 @@
 package com.huawei.cloudnative.ecommerce.controller;
 
 import com.huawei.cloudnative.ecommerce.dto.CreateOrderRequest;
-import com.huawei.cloudnative.ecommerce.entity.ProductEntity;
 import com.huawei.cloudnative.ecommerce.model.Order;
 import com.huawei.cloudnative.ecommerce.service.OrderService;
-import com.huawei.cloudnative.ecommerce.service.ProductService;
 import com.huawei.cloudnative.ecommerce.service.TokenService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -27,12 +25,10 @@ public class OrderController {
     private static final String BEARER_PREFIX = "Bearer ";
 
     private final TokenService tokenService;
-    private final ProductService productService;
     private final OrderService orderService;
 
-    public OrderController(TokenService tokenService, ProductService productService, OrderService orderService) {
+    public OrderController(TokenService tokenService, OrderService orderService) {
         this.tokenService = tokenService;
-        this.productService = productService;
         this.orderService = orderService;
     }
 
@@ -44,12 +40,7 @@ public class OrderController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        List<ProductEntity> products = productService.findEntitiesByIds(request.productIds());
-        if (products.isEmpty()) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(orderService.createOrder(username.get(), products));
+        return ResponseEntity.status(HttpStatus.CREATED).body(orderService.createOrder(username.get(), request.items()));
     }
 
     @GetMapping

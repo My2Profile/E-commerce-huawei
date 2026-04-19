@@ -2,8 +2,10 @@ package com.huawei.cloudnative.ecommerce.controller;
 
 import com.huawei.cloudnative.ecommerce.dto.LoginRequest;
 import com.huawei.cloudnative.ecommerce.dto.LoginResponse;
+import com.huawei.cloudnative.ecommerce.dto.RegisterRequest;
 import com.huawei.cloudnative.ecommerce.service.AuthService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,6 +20,11 @@ public class AuthController {
 
     public AuthController(AuthService authService) {
         this.authService = authService;
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<LoginResponse> register(@Valid @RequestBody RegisterRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(authService.register(request));
     }
 
     @PostMapping("/login")

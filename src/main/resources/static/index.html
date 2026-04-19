@@ -11,10 +11,11 @@
     <h1>E-commerce Demo</h1>
 
     <section class="card">
-        <h2>1) Login</h2>
+        <h2>1) Register / Login</h2>
         <div class="row">
             <input id="username" type="text" placeholder="Username (e.g. demo)" />
             <input id="password" type="password" placeholder="Password (default: password123)" />
+            <button id="registerBtn">Register</button>
             <button id="loginBtn">Login</button>
         </div>
         <p id="loginResult" class="result"></p>
@@ -28,9 +29,9 @@
 
     <section class="card">
         <h2>3) Create Order</h2>
-        <p>Input product IDs separated by comma, e.g. 1,2</p>
+        <p>Input items as productId:quantity separated by comma, e.g. 1:2,2:1</p>
         <div class="row">
-            <input id="orderProductIds" type="text" placeholder="1,2" />
+            <input id="orderItems" type="text" placeholder="1:2,2:1" />
             <button id="createOrderBtn">Create Order</button>
             <button id="loadOrdersBtn">Load My Orders</button>
         </div>
